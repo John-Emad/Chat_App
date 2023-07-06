@@ -1,33 +1,30 @@
-import 'package:chat_app/register/register_model.dart';
-import 'package:chat_app/register/register_navigator.dart';
+import 'package:chat_app/login/login_model.dart';
+import 'package:chat_app/login/login_navigator.dart';
+import 'package:chat_app/register/register_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/common_methods.dart' as utils;
 
-class RegisterScreen extends StatefulWidget {
-  static const String routeName = "registerScreen";
+class LoginScreen extends StatefulWidget {
+  static const String routeName = "LoginScreen";
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen>
-    implements RegisterNavigator {
+class _LoginScreenState extends State<LoginScreen> implements LoginNavigator {
   bool isObscure = true;
-  String firstName = "";
-  String lastName = "";
-  String userName = "";
   String emailAddress = "";
   String password = "";
 
   var formKey = GlobalKey<FormState>();
 
-  RegisterModel registerModel = RegisterModel();
+  LoginModel loginModel = LoginModel();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    registerModel.navigator = this;
+    loginModel.navigator = this;
   }
 
   @override
@@ -48,7 +45,7 @@ class _RegisterScreenState extends State<RegisterScreen>
             backgroundColor: Colors.transparent,
             elevation: 0,
             title: const Text(
-              "Create Account",
+              "Log in",
             ),
             centerTitle: true,
           ),
@@ -59,48 +56,6 @@ class _RegisterScreenState extends State<RegisterScreen>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // First name
-                  TextFormField(
-                    decoration:
-                        const InputDecoration(label: Text("First name")),
-                    validator: (text) {
-                      if (text == null || text.trim().isEmpty) {
-                        return "Please, enter your first name";
-                      }
-                      return null;
-                    },
-                    onChanged: (text) {
-                      firstName = text;
-                    },
-                  ),
-                  // Last name
-                  TextFormField(
-                    decoration:
-                        const InputDecoration(label: Text("Last name")),
-                    validator: (text) {
-                      if (text == null || text.trim().isEmpty) {
-                        return "Please, enter your last name";
-                      }
-                      return null;
-                    },
-                    onChanged: (text) {
-                      lastName = text;
-                    },
-                  ),
-                  // User name
-                  TextFormField(
-                    decoration:
-                        const InputDecoration(label: Text("User name")),
-                    validator: (text) {
-                      if (text == null || text.trim().isEmpty) {
-                        return "Please, enter your user name";
-                      }
-                      return null;
-                    },
-                    onChanged: (text) {
-                      userName = text;
-                    },
-                  ),
                   // Email-Address
                   TextFormField(
                     decoration:
@@ -157,7 +112,16 @@ class _RegisterScreenState extends State<RegisterScreen>
                     onPressed: () {
                       validateForm();
                     },
-                    child: const Text("Create Account"),
+                    child: const Text("Login"),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, RegisterScreen.routeName);
+                    },
+                    child: const Text("Create a new account"),
                   )
                 ],
               ),
@@ -166,17 +130,6 @@ class _RegisterScreenState extends State<RegisterScreen>
         )
       ],
     );
-  }
-
-  Future<void> validateForm() async {
-    if (formKey.currentState?.validate() == true) {
-      registerModel.registerNewAccount(
-          emailAddress: emailAddress,
-          password: password,
-          firstName: firstName,
-          lastName: lastName,
-          userName: userName);
-    }
   }
 
   @override
@@ -199,9 +152,14 @@ class _RegisterScreenState extends State<RegisterScreen>
     });
   }
 
+  void validateForm() {
+    if (formKey.currentState?.validate() == true) {
+      loginModel.loginAccount(emailAddress: emailAddress, password: password);
+    }
+  }
+
   @override
   void navigateToHome() {
-    // TODO: implement navigateToHome
     utils.navigateToHome(context);
   }
 }
